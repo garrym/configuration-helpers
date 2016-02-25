@@ -1,3 +1,5 @@
+using System.Configuration;
+
 namespace BaseFour.ConfigurationHelpers
 {
     public interface IConfiguration
@@ -9,5 +11,7 @@ namespace BaseFour.ConfigurationHelpers
         T GetAppSettingAs<T>(string key, bool required = true);
 
         T GetAppSettingOrDefaultAs<T>(string key, T defaultValue);
+
+        ConnectionStringSettings GetConnectionString(string name);
     }
 }

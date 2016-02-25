@@ -6,5 +6,7 @@ namespace BaseFour.ConfigurationHelpers
     internal class ConfigurationManagerWrapper : IConfigurationManagerWrapper
     {
         public NameValueCollection AppSettings => ConfigurationManager.AppSettings;
+
+        public ConnectionStringSettingsCollection ConnectionStrings => ConfigurationManager.ConnectionStrings;
     }
 }

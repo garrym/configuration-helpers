@@ -57,6 +57,18 @@ namespace BaseFour.ConfigurationHelpers
             return defaultValue;
         }
 
+        public ConnectionStringSettings GetConnectionString(string name)
+        {
+            var connectionString = _configurationManagerWrapper.ConnectionStrings[name];
+            if (connectionString == null)
+                throw new ConfigurationErrorsException($"Required connection string '{name}' is missing.");
+            
+            if (string.IsNullOrWhiteSpace(connectionString.ConnectionString))
+                throw new ConfigurationErrorsException($"Required connection string '{name}' is empty.");
+
+            return connectionString;
+        }
+
         private TypeConverter GetTypeConverter<T>()
         {
             return TypeDescriptor.GetConverter(typeof(T));

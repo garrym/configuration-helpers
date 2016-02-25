@@ -8,10 +8,17 @@ namespace BaseFour.ConfigurationHelpers.Tests
     [TestFixture]
     public class ConfigurationTests
     {
-        private Mock<IConfigurationManagerWrapper> GetMockWrapper(NameValueCollection appSettings)
+        private Mock<IConfigurationManagerWrapper> GetMockWrapperWithAppSettings(NameValueCollection appSettings)
         {
             var mockConfigurationManagerWrapper = new Mock<IConfigurationManagerWrapper>();
             mockConfigurationManagerWrapper.SetupGet(x => x.AppSettings).Returns(appSettings);
+            return mockConfigurationManagerWrapper;
+        }
+
+        private Mock<IConfigurationManagerWrapper> GetMockWrapperWithConnectionStrings(ConnectionStringSettingsCollection connectionStrings)
+        {
+            var mockConfigurationManagerWrapper = new Mock<IConfigurationManagerWrapper>();
+            mockConfigurationManagerWrapper.SetupGet(x => x.ConnectionStrings).Returns(connectionStrings);
             return mockConfigurationManagerWrapper;
         }
 
@@ -19,7 +26,7 @@ namespace BaseFour.ConfigurationHelpers.Tests
         public void Ensure_GetAppSettingOrDefaultAsT_Returns_Value_If_Present()
         {
             // Arrange
-            var mockWrapper = GetMockWrapper(new NameValueCollection { { "Test", "1" } });
+            var mockWrapper = GetMockWrapperWithAppSettings(new NameValueCollection { { "Test", "1" } });
             var configuration = new Configuration(mockWrapper.Object);
 
             // Act
@@ -33,7 +40,7 @@ namespace BaseFour.ConfigurationHelpers.Tests
         public void Ensure_GetAppSettingOrDefaultAsT_Returns_DefaultT_If_Missing()
         {
             // Arrange
-            var mockWrapper = GetMockWrapper(new NameValueCollection());
+            var mockWrapper = GetMockWrapperWithAppSettings(new NameValueCollection());
             var configuration = new Configuration(mockWrapper.Object);
 
             // Act
@@ -48,7 +55,7 @@ namespace BaseFour.ConfigurationHelpers.Tests
         public void Ensure_GetAppSettingOrDefaultAsT_Returns_DefaultT_If_Empty(string value)
         {
             // Arrange
-            var mockWrapper = GetMockWrapper(new NameValueCollection { { "Test", value } });
+            var mockWrapper = GetMockWrapperWithAppSettings(new NameValueCollection { { "Test", value } });
             var configuration = new Configuration(mockWrapper.Object);
 
             // Act
@@ -62,7 +69,7 @@ namespace BaseFour.ConfigurationHelpers.Tests
         public void Ensure_GetAppSettingOrDefaultAsT_Returns_DefaultT_If_Present_But_Fails_Conversion()
         {
             // Arrange
-            var mockWrapper = GetMockWrapper(new NameValueCollection { { "Test", "abc" } });
+            var mockWrapper = GetMockWrapperWithAppSettings(new NameValueCollection { { "Test", "abc" } });
             var configuration = new Configuration(mockWrapper.Object);
 
             // Act
@@ -76,7 +83,7 @@ namespace BaseFour.ConfigurationHelpers.Tests
         public void Ensure_GetAppSettingAsT_Returns_Value_If_Present_And_Required_Is_True()
         {
             // Arrange
-            var mockWrapper = GetMockWrapper(new NameValueCollection { { "Test", "5" } });
+            var mockWrapper = GetMockWrapperWithAppSettings(new NameValueCollection { { "Test", "5" } });
             var configuration = new Configuration(mockWrapper.Object);
 
             // Act
@@ -90,7 +97,7 @@ namespace BaseFour.ConfigurationHelpers.Tests
         public void Ensure_GetAppSettingAsT_Returns_Value_If_Present_And_Required_Is_False()
         {
             // Arrange
-            var mockWrapper = GetMockWrapper(new NameValueCollection { { "Test", "6" } });
+            var mockWrapper = GetMockWrapperWithAppSettings(new NameValueCollection { { "Test", "6" } });
             var configuration = new Configuration(mockWrapper.Object);
 
             // Act
@@ -104,7 +111,7 @@ namespace BaseFour.ConfigurationHelpers.Tests
         public void Ensure_GetAppSettingAsT_Returns_DefaultT_If_Missing_And_Required_Is_False()
         {
             // Arrange
-            var mockWrapper = GetMockWrapper(new NameValueCollection());
+            var mockWrapper = GetMockWrapperWithAppSettings(new NameValueCollection());
             var configuration = new Configuration(mockWrapper.Object);
 
             // Act
@@ -119,7 +126,7 @@ namespace BaseFour.ConfigurationHelpers.Tests
         public void Ensure_GetAppSettingAsT_Returns_DefaultT_If_Empty_And_Required_Is_False(string value)
         {
             // Arrange
-            var mockWrapper = GetMockWrapper(new NameValueCollection { { "Test", value } });
+            var mockWrapper = GetMockWrapperWithAppSettings(new NameValueCollection { { "Test", value } });
             var configuration = new Configuration(mockWrapper.Object);
 
             // Act
@@ -133,7 +140,7 @@ namespace BaseFour.ConfigurationHelpers.Tests
         public void Ensure_GetAppSettingAsT_Throws_Exception_If_Missing_And_Required_Is_True()
         {
             // Arrange
-            var mockWrapper = GetMockWrapper(new NameValueCollection());
+            var mockWrapper = GetMockWrapperWithAppSettings(new NameValueCollection());
             var configuration = new Configuration(mockWrapper.Object);
 
             // Act + Assert
@@ -145,7 +152,7 @@ namespace BaseFour.ConfigurationHelpers.Tests
         public void Ensure_GetAppSettingAsT_Throws_Exception_If_Empty_And_Required_Is_True(string value)
         {
             // Arrange
-            var mockWrapper = GetMockWrapper(new NameValueCollection() { { "Test", value } });
+            var mockWrapper = GetMockWrapperWithAppSettings(new NameValueCollection() { { "Test", value } });
             var configuration = new Configuration(mockWrapper.Object);
 
             // Act + Assert
@@ -156,7 +163,7 @@ namespace BaseFour.ConfigurationHelpers.Tests
         public void Ensure_GetAppSettingAsT_Throws_Exception_If_Present_But_Fails_Conversion_When_Required_Is_True()
         {
             // Arrange
-            var mockWrapper = GetMockWrapper(new NameValueCollection { { "Test", "abc" } });
+            var mockWrapper = GetMockWrapperWithAppSettings(new NameValueCollection { { "Test", "abc" } });
             var configuration = new Configuration(mockWrapper.Object);
 
             // Act + Assert
@@ -167,7 +174,7 @@ namespace BaseFour.ConfigurationHelpers.Tests
         public void Ensure_GetAppSettingAsT_Returns_DefaultT_If_Present_But_Fails_Conversion_When_Required_Is_False()
         {
             // Arrange
-            var mockWrapper = GetMockWrapper(new NameValueCollection { { "Test", "abc" } });
+            var mockWrapper = GetMockWrapperWithAppSettings(new NameValueCollection { { "Test", "abc" } });
             var configuration = new Configuration(mockWrapper.Object);
 
             // Act
@@ -181,7 +188,7 @@ namespace BaseFour.ConfigurationHelpers.Tests
         public void Ensure_GetAppSetting_Returns_Value_If_Present_And_Required_Is_True()
         {
             // Arrange
-            var mockWrapper = GetMockWrapper(new NameValueCollection { { "Test", "abc" } });
+            var mockWrapper = GetMockWrapperWithAppSettings(new NameValueCollection { { "Test", "abc" } });
             var configuration = new Configuration(mockWrapper.Object);
 
             // Act
@@ -195,7 +202,7 @@ namespace BaseFour.ConfigurationHelpers.Tests
         public void Ensure_GetAppSetting_Returns_Value_If_Present_And_Required_Is_False()
         {
             // Arrange
-            var mockWrapper = GetMockWrapper(new NameValueCollection { { "Test", "abc" } });
+            var mockWrapper = GetMockWrapperWithAppSettings(new NameValueCollection { { "Test", "abc" } });
             var configuration = new Configuration(mockWrapper.Object);
 
             // Act
@@ -209,7 +216,7 @@ namespace BaseFour.ConfigurationHelpers.Tests
         public void Ensure_GetAppSetting_Throws_Exception_If_Missing_And_Required_Is_True()
         {
             // Arrange
-            var mockWrapper = GetMockWrapper(new NameValueCollection());
+            var mockWrapper = GetMockWrapperWithAppSettings(new NameValueCollection());
             var configuration = new Configuration(mockWrapper.Object);
 
             // Act + Assert
@@ -221,7 +228,7 @@ namespace BaseFour.ConfigurationHelpers.Tests
         public void Ensure_GetAppSetting_Throws_Exception_If_Empty_And_Required_Is_True(string value)
         {
             // Arrange
-            var mockWrapper = GetMockWrapper(new NameValueCollection { { "Test", value } });
+            var mockWrapper = GetMockWrapperWithAppSettings(new NameValueCollection { { "Test", value } });
             var configuration = new Configuration(mockWrapper.Object);
 
             // Act + Assert
@@ -232,7 +239,7 @@ namespace BaseFour.ConfigurationHelpers.Tests
         public void Ensure_GetAppSetting_Returns_Empty_String_If_Missing_And_Required_Is_False()
         {
             // Arrange
-            var mockWrapper = GetMockWrapper(new NameValueCollection());
+            var mockWrapper = GetMockWrapperWithAppSettings(new NameValueCollection());
             var configuration = new Configuration(mockWrapper.Object);
 
             // Act
@@ -247,7 +254,7 @@ namespace BaseFour.ConfigurationHelpers.Tests
         public void Ensure_GetAppSetting_Returns_Empty_String_If_Empty_And_Required_Is_False(string value)
         {
             // Arrange
-            var mockWrapper = GetMockWrapper(new NameValueCollection { { "Test", value } });
+            var mockWrapper = GetMockWrapperWithAppSettings(new NameValueCollection { { "Test", value } });
             var configuration = new Configuration(mockWrapper.Object);
 
             // Act
@@ -261,7 +268,7 @@ namespace BaseFour.ConfigurationHelpers.Tests
         public void Ensure_GetAppSettingOrDefault_Returns_Value_If_Present()
         {
             // Arrange
-            var mockWrapper = GetMockWrapper(new NameValueCollection { { "Test", "abc" } });
+            var mockWrapper = GetMockWrapperWithAppSettings(new NameValueCollection { { "Test", "abc" } });
             var configuration = new Configuration(mockWrapper.Object);
 
             // Act
@@ -276,7 +283,7 @@ namespace BaseFour.ConfigurationHelpers.Tests
         public void Ensure_GetAppSettingOrDefault_Returns_Default_Value_If_Missing()
         {
             // Arrange
-            var mockWrapper = GetMockWrapper(new NameValueCollection());
+            var mockWrapper = GetMockWrapperWithAppSettings(new NameValueCollection());
             var configuration = new Configuration(mockWrapper.Object);
 
             // Act
@@ -291,7 +298,7 @@ namespace BaseFour.ConfigurationHelpers.Tests
         public void Ensure_GetAppSettingOrDefault_Returns_Default_Value_If_Empty(string value)
         {
             // Arrange
-            var mockWrapper = GetMockWrapper(new NameValueCollection { { "Test", value } });
+            var mockWrapper = GetMockWrapperWithAppSettings(new NameValueCollection { { "Test", value } });
             var configuration = new Configuration(mockWrapper.Object);
 
             // Act
@@ -299,6 +306,45 @@ namespace BaseFour.ConfigurationHelpers.Tests
 
             // Assert
             Assert.AreEqual("abc", result);
+        }
+
+        [Test]
+        public void Ensure_GetConnectionString_Throws_Exception_If_Missing()
+        {
+            // Arrange
+            var mockWrapper = GetMockWrapperWithConnectionStrings(new ConnectionStringSettingsCollection());
+            var configuration = new Configuration(mockWrapper.Object);
+
+            // Act + Assert
+            Assert.Throws<ConfigurationErrorsException>(() => configuration.GetConnectionString("ConnectionString1"));
+        }
+
+        [TestCase("")]
+        [TestCase(" ")]
+        public void Ensure_GetConnectionString_Throws_Exception_If_Empty(string value)
+        {
+            // Arrange
+            var mockWrapper = GetMockWrapperWithConnectionStrings(new ConnectionStringSettingsCollection { new ConnectionStringSettings("ConnectionString1", value) });
+            var configuration = new Configuration(mockWrapper.Object);
+
+            // Act + Assert
+            Assert.Throws<ConfigurationErrorsException>(() => configuration.GetConnectionString("ConnectionString1"));
+        }
+
+        [Test]
+        public void Ensure_GetConnectionString_Returns_ConnectionString_If_Present()
+        {
+            // Arrange
+            var mockWrapper = GetMockWrapperWithConnectionStrings(new ConnectionStringSettingsCollection { new ConnectionStringSettings("ConnectionString1", "TestConnectionString", "TestProviderName") });
+            var configuration = new Configuration(mockWrapper.Object);
+
+            // Act
+            var result = configuration.GetConnectionString("ConnectionString1");
+
+            // Assert
+            Assert.AreEqual("ConnectionString1", result.Name);
+            Assert.AreEqual("TestConnectionString", result.ConnectionString);
+            Assert.AreEqual("TestProviderName", result.ProviderName);
         }
     }
 }
